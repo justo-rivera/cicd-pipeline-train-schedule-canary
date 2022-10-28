@@ -56,7 +56,8 @@ pipeline {
             }
             steps {
                 withCredentials([usernamePassword(credentialsId:'kube_ssh',usernameVariable:'USERNAME',passwordVariable:'PASSWORD')]){
-                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl remove deployment train-schedule-deployment"
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete service train-schedule-service"
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete deployment train-schedule-deployment"
                 }
             }
         }

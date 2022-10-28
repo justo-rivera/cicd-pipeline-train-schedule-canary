@@ -50,17 +50,6 @@ pipeline {
                 )
             }
         }
-        stage('RemoveCanary') {
-            when {
-                branch 'master'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId:'kube_ssh',usernameVariable:'USERNAME',passwordVariable:'PASSWORD')]){
-                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete service train-schedule-service"
-                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete deployment train-schedule-deployment"
-                }
-            }
-        }
         stage('DeployToProduction') {
             when {
                 branch 'master'
@@ -68,6 +57,10 @@ pipeline {
             steps {
                 input 'Deploy to Production?'
                 milestone(1)
+                withCredentials([usernamePassword(credentialsId:'kube_ssh',usernameVariable:'USERNAME',passwordVariable:'PASSWORD')]){
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete service train-schedule-service"
+                    sh "sshpass -p '$PASSWORD' -v ssh -o StrictHostKeyChecking=no cloud_user@52.70.241.7 kubectl delete deployment train-schedule-deployment"
+                }
                 kubernetesDeploy(
                     kubeconfigId: 'kubeconfig',
                     configs: 'train-schedule-kube.yml',

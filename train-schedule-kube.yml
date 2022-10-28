@@ -24,12 +24,12 @@ spec:
   selector:
     matchLabels:
       app: train-schedule
-      track: stable
+      track: canary
   template:
     metadata:
       labels:
         app: train-schedule
-        track: stable
+        track: canary
     spec:
       containers:
       - name: train-schedule
